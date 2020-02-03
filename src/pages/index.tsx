@@ -19,19 +19,26 @@ interface Row {
 interface CatMap {
   [key: string]: string,
 }
-const catMap: CatMap = {
+const catTitle: CatMap = {
   confirmedCount: '确诊',
   // suspectedCount: '疑似',
   deadCount: '死亡',
   curedCount: '治愈',
 }
+const catColor: CatMap = {
+  '确诊': '#F04864',
+  '疑似': '#FACC14',
+  '死亡': '#4d5054',
+  '治愈': '#2FC25B',
+};
+const color = [categoryKey, (cat: string) => catColor[cat]];
 
 const transforms = [{
   type: 'rename',
-  map: catMap,
+  map: catTitle,
 }, {
   type: 'fold',
-  fields: Object.values(catMap),
+  fields: Object.values(catTitle),
   key: categoryKey,
   value: valueKey,
 }, {
@@ -58,13 +65,6 @@ const scale = {
   }
 };
 
-const color = [categoryKey, [
-  '#F04864', 
-  // '#FACC14', 
-  '#4d5054', 
-  '#2FC25B'
-]];
-
 const columns: Array<Object> = [{
   title: '时间',
   dataIndex: timeKey,
@@ -73,10 +73,11 @@ const columns: Array<Object> = [{
   sorter: (a: Row, b: Row) => a[timeKey] - b[timeKey],
   defaultSortOrder: 'descend',
 }];
-columns.push(...Object.keys(catMap).map(key => ({
-  title: catMap[key],
+columns.push(...Object.keys(catTitle).map(key => ({
+  title: catTitle[key],
   dataIndex: key,
   key,
+  render: (num: number) => num ? num.toString() : '-',
 })));
 
 const defaultLocation = {

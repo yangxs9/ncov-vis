@@ -4,6 +4,8 @@ import { IConfig } from 'umi-types';
 const config: IConfig =  {
   treeShaking: true,
   hash: true,
+  base: '/ncov-vis',
+  publicPath: './',
   routes: [
     {
       path: '/',
