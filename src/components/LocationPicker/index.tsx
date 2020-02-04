@@ -13,13 +13,12 @@ interface CbFunc {
 interface PickerPros {
   areas: Array<string>,
   cities: Array<string>,
-  defaultValue: Location,
+  value: Location,
   onChange: CbFunc,
 }
 
 const LocationPicker = (props: PickerPros) => {
-  const { areas, cities, defaultValue, onChange } = props;
-  const [location, setLocation] = useState(defaultValue);
+  const { areas, cities, value: location, onChange } = props;
   
   const onAreaChange = (area: string) => {
     const newLoc = {
@@ -27,7 +26,6 @@ const LocationPicker = (props: PickerPros) => {
       city: TOTAL,
     };
 
-    setLocation(newLoc);
     onChange(newLoc);
   }
 
@@ -37,7 +35,6 @@ const LocationPicker = (props: PickerPros) => {
       city,
     };
 
-    setLocation(newLoc);
     onChange(newLoc);
   }
 

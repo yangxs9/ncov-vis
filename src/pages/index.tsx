@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAsync } from '@umijs/hooks';
 import moment from 'moment';
 import useHistory from '@/hooks/useHistory';
-import { getAreas } from '@/services/api';
+import { getAreas, getIPInfo } from '@/services/api';
 import { Table, Spin, Alert } from 'antd';
 import LocationPicker from '@/components/LocationPicker';
 import Timeline from '@/components/Timeline';
 import { get } from 'lodash-es';
 import styles from './index.css';
 import { TOTAL, OVERALL } from '@/constants';
+
+const userIP = get(window,'returnCitySN.cip');
 
 const valueKey = 'count';
 const timeKey = 'updateTime';
@@ -84,6 +86,16 @@ export default function() {
   const { data: areas = [], loading: areaLoading, error: areaError } = useAsync(getAreas, []);
 
   const [location, setLocation] =  useState(defaultLocation);
+  useEffect(() => {
+    getIPInfo(userIP).then(({ province}) => {
+      if (province && areas.indexOf(province)) {
+        setLocation({
+          area: province,
+          city: TOTAL,
+        });
+      }
+    });
+  }, [areas]);
 
   const [areaData, loading, error] = useHistory(location.area);
   const cities = Object.keys(areaData || {});
@@ -112,7 +124,8 @@ export default function() {
       <LocationPicker 
         areas={[OVERALL].concat(areas)}
         cities={cities}
-        defaultValue={defaultLocation}
+        value={location}
+        // defaultValue={defaultLocation}
         onChange={setLocation}
       />
       {error && <Alert message="错误：获取地区历史数据失败，请刷新重试" type="error"  className={styles.error} />}
