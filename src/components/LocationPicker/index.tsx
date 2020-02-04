@@ -2,6 +2,7 @@ import React, { useState, Fragment } from 'react';
 import { Button, Select } from 'antd';
 import { Location } from '@/interfaces/location';
 import styles from './index.css';
+import { TOTAL } from '@/constants';
 
 const { Option } = Select;
 
@@ -23,7 +24,7 @@ const LocationPicker = (props: PickerPros) => {
   const onAreaChange = (area: string) => {
     const newLoc = {
       area,
-      city: '总计',
+      city: TOTAL,
     };
 
     setLocation(newLoc);

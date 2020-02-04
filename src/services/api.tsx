@@ -11,3 +11,8 @@ export async function getAreaData(params: Object, options?: Object | undefined) 
   return request(`https://lab.ahusmart.com/nCoV/api/area?${stringify(params)}`, options)
   .then(data => get(data, 'results'));
 }
+
+export async function getOverall(params: Object, options?: Object | undefined) {
+  return request(`https://lab.ahusmart.com/nCoV/api/overall?${stringify(params)}`, options)
+  .then(data => get(data, 'results'));
+}

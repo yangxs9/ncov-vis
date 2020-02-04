@@ -32,12 +32,13 @@ interface TimelineProps {
   categoryKey?: string,
   color?: any,
   size?: number,
+  pointSize?: number,
   shape?: string,
   transforms: Array<Object>,
 }
 
 const Timeline = (props: TimelineProps) => {
-  const { data, timeKey, valueKey, categoryKey, height, scale, transforms, color, size, shape } = props;
+  const { data, timeKey, valueKey, height, scale, transforms, color, size, pointSize, shape } = props;
 
   const ds = new DataSet();
   const dv = ds.createView().source(data || []);
@@ -64,6 +65,13 @@ const Timeline = (props: TimelineProps) => {
         color={color} 
         shape={shape}
       />
+      <Geom
+        type="point"
+        position={`${timeKey}*${valueKey}`} 
+        size={pointSize}
+        shape={"circle"}
+        color={color} 
+      />
     </Chart>
   );
 }
@@ -75,6 +83,7 @@ Timeline.defaultProps = {
   categoryKey: 'category',
   color: 'category',
   size: 2,
+  pointSize: 3,
   shape: 'smooth',
   transforms: [],
 } as Partial<TimelineProps>;

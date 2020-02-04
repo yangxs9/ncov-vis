@@ -8,6 +8,7 @@ import LocationPicker from '@/components/LocationPicker';
 import Timeline from '@/components/Timeline';
 import { get } from 'lodash-es';
 import styles from './index.css';
+import { TOTAL, OVERALL } from '@/constants';
 
 const valueKey = 'count';
 const timeKey = 'updateTime';
@@ -21,12 +22,14 @@ interface CatMap {
 }
 const catTitle: CatMap = {
   confirmedCount: '确诊',
+  growthCount: '新增',
   // suspectedCount: '疑似',
   deadCount: '死亡',
   curedCount: '治愈',
 }
 const catColor: CatMap = {
   '确诊': '#F04864',
+  '新增': '#1890FF',
   '疑似': '#FACC14',
   '死亡': '#4d5054',
   '治愈': '#2FC25B',
@@ -48,31 +51,16 @@ const transforms = [{
   }
 }];
 
-const scale = {
-  [valueKey]: {
-    type: 'linear',
-    alias: '人数',
-  },
-  [timeKey]: {
-    type: 'time',
-    alias: '时间',
-    mask: 'M.D',
-    tickInterval: 60*60*24*1000,
-  },
-  [categoryKey]: {
-    type: 'cat',
-    alias: '类型',
-  }
-};
-
 const columns: Array<Object> = [{
   title: '时间',
   dataIndex: timeKey,
   key: timeKey,
-  render: (time: number) => moment(time).format('YYYY-MM-DD'),
+  render: (time: number) => moment(time).format('M.D'),
   sorter: (a: Row, b: Row) => a[timeKey] - b[timeKey],
   defaultSortOrder: 'descend',
+  // width: 60,
 }];
+
 columns.push(...Object.keys(catTitle).map(key => ({
   title: catTitle[key],
   dataIndex: key,
@@ -80,9 +68,16 @@ columns.push(...Object.keys(catTitle).map(key => ({
   render: (num: number) => num ? num.toString() : '-',
 })));
 
+columns.splice(3, 0, {
+  title: '增长率',
+  dataIndex: 'growthRate',
+  key: 'growthRate',
+  render: (rate: number) => rate ? `${(rate * 100).toFixed(2)}%` : '-',
+});
+
 const defaultLocation = {
-  area: '湖北省',
-  city: '武汉',
+  area: OVERALL,
+  city: TOTAL,
 };
 
 export default function() {
@@ -94,11 +89,28 @@ export default function() {
   const cities = Object.keys(areaData || {});
   const cityData = get(areaData, location.city) || [];
 
+  const scale = {
+    [valueKey]: {
+      type: 'linear',
+      alias: '人数',
+    },
+    [timeKey]: {
+      type: 'timeCat',
+      alias: '时间',
+      mask: 'M.D',
+      tickCount: cityData.length,
+    },
+    [categoryKey]: {
+      type: 'cat',
+      alias: '类型',
+    }
+  };
+
   return (
     <div className={styles.normal}>
       {areaError && <Alert message="错误：获取区域列表失败，请刷新重试" type="error" className={styles.error} />}
       <LocationPicker 
-        areas={areas}
+        areas={[OVERALL].concat(areas)}
         cities={cities}
         defaultValue={defaultLocation}
         onChange={setLocation}
@@ -121,6 +133,8 @@ export default function() {
         rowKey={timeKey}
         columns={columns}
         pagination={{ pageSize: 20, hideOnSinglePage: true }}
+        scroll={{ x: 420 }}
+        size="small"
         loading={loading}
         bordered
       />
