@@ -87,12 +87,18 @@ export default function() {
 
   const [location, setLocation] =  useState(defaultLocation);
   useEffect(() => {
-    getIPInfo(userIP).then(({ province}) => {
-      if (province && areas.indexOf(province)) {
-        setLocation({
-          area: province,
-          city: TOTAL,
-        });
+    if (!userIP || areas.length === 0) return;
+    getIPInfo(userIP).then(res => {
+      const province = get(res, 'data.prov');
+      if (!province) return;
+      for (let i = 0; i < areas.length; i++) {
+        if (areas[i].includes(province)) {
+          setLocation({
+            area: areas[i],
+            city: TOTAL,
+          });
+          break;
+        }
       }
     });
   }, [areas]);

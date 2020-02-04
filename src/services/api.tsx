@@ -18,7 +18,7 @@ export async function getOverall(params: Object, options?: Object | undefined) {
 }
 
 export async function getIPInfo(ip: string) {
-  return request(`http://iploc.market.alicloudapi.com/v3/ip?ip=${ip}`, {
+  return request(`https://ipquery.market.alicloudapi.com/query?ip=${ip}`, {
     headers: {
       'Authorization': 'APPCODE 6e02533fc3144b9bbf60996caab90f96',
     },
