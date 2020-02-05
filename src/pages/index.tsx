@@ -116,7 +116,7 @@ export default function() {
       type: 'timeCat',
       alias: '时间',
       mask: 'M.D',
-      tickCount: cityData.length,
+      // tickCount: cityData.length,
     },
     [categoryKey]: {
       type: 'cat',
