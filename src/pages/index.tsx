@@ -25,9 +25,9 @@ interface CatMap {
 const catTitle: CatMap = {
   confirmedCount: '确诊',
   growthCount: '新增',
-  // suspectedCount: '疑似',
   deadCount: '死亡',
   curedCount: '治愈',
+  suspectedCount: '疑似',
 }
 const catColor: CatMap = {
   '确诊': '#F04864',
